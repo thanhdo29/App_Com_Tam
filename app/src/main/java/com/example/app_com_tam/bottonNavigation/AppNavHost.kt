@@ -1,6 +1,5 @@
-package com.example.app_com_tam.BottonNavigation
+package com.example.app_com_tam.bottonNavigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost

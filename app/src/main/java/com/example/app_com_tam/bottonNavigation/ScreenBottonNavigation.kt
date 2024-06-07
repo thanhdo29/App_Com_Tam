@@ -1,25 +1,20 @@
-package com.example.app_com_tam.BottonNavigation
+package com.example.app_com_tam.bottonNavigation
 
-import android.content.res.Resources.Theme
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -57,10 +52,10 @@ fun ScreenBottonNavigation() {
         mutableStateOf(0)
     }
     val listItem = listOf(
-        BottonNavigationItem(TitleBottonNavigation.Home.name, R.drawable.icon_home, R.drawable.icon_home),
-        BottonNavigationItem(TitleBottonNavigation.Statistical.name, R.drawable.icon_statistial,R.drawable.icon_statistial ),
-        BottonNavigationItem(TitleBottonNavigation.Manage.name, R.drawable.icon_manage,R.drawable.icon_manage ),
-        BottonNavigationItem(TitleBottonNavigation.Help.name, R.drawable.icon_help,R.drawable.icon_help )
+        BottonNavigationItem(TitleBottonNavigation.Home.name, R.drawable.icon_home1_selected, R.drawable.icon_home_selected),
+        BottonNavigationItem(TitleBottonNavigation.Statistical.name, R.drawable.icon_statistial,R.drawable.icon_tk_selecte ),
+        BottonNavigationItem(TitleBottonNavigation.Manage.name, R.drawable.icon_manage,R.drawable.icon_manage_selected ),
+        BottonNavigationItem(TitleBottonNavigation.Help.name, R.drawable.icon_help,R.drawable.icon_help_selecte )
     )
 
     Surface {
@@ -83,17 +78,33 @@ fun ScreenBottonNavigation() {
 fun BottonNavigationBar(items:List<BottonNavigationItem>,
                         selectedItemIndex:Int,
                         onItemSelected:(Int)->Unit){
+    val interactionSource = remember { MutableInteractionSource() }
     NavigationBar(containerColor = Black_Medium) {
         items.forEachIndexed { index, bottonNavigationItem ->
             NavigationBarItem(
                 selected = selectedItemIndex == index,
                 onClick = {onItemSelected(index) },
+                modifier = Modifier,
                 icon = {
-                    Image(painter =  painterResource(id = bottonNavigationItem.selectItem), contentDescription ="", modifier = Modifier.size(23 .dp) )
+                    val painter=if(selectedItemIndex== index) {
+                        painterResource(id = bottonNavigationItem.unSnSelectItem)
+                    }else{
+                        painterResource(id = bottonNavigationItem.selectItem)
+                    }
+                    Image(painter =  painter,
+                        contentDescription ="",
+                        modifier = Modifier
+                            .size(23.dp))
+                },
+                label = {
+                    Text(
+                        text = bottonNavigationItem.title,
+                        color = if (selectedItemIndex == index) Amber else White
+                    )
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Color.Blue,
-                    unselectedIconColor = White
+                    unselectedIconColor = Color.DarkGray
                 ))
 
         }
