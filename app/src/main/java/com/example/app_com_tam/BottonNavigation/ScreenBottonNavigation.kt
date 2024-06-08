@@ -1,15 +1,10 @@
 package com.example.app_com_tam.BottonNavigation
 
-import android.content.res.Resources.Theme
+import CategoryScreen2
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -19,16 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.app_com_tam.screens.Help
 import com.example.app_com_tam.screens.Home
-import com.example.app_com_tam.screens.Manage
+import com.example.app_com_tam.screens.manager.Manage
 import com.example.app_com_tam.screens.Statistical
-import com.example.app_com_tam.ui.theme.Amber
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.White
 import androidx.compose.runtime.*
@@ -36,6 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.app_com_tam.R
+import com.example.app_com_tam.screens.category.AddCategory
+import com.example.app_com_tam.screens.category.CategoryScreen
+import com.example.app_com_tam.screens.dish.AddDish
+import com.example.app_com_tam.screens.dish.DeleteDish
+import com.example.app_com_tam.screens.dish.DishScreen
+import com.example.app_com_tam.screens.dish.ManagerDish
+import com.example.app_com_tam.screens.dish.UpdateDish
 
 enum class TitleBottonNavigation{
     Home,
@@ -52,6 +52,7 @@ data class BottonNavigationItem(
 
 @Composable
 fun ScreenBottonNavigation() {
+
     val navController= rememberNavController()
     var selectItem by remember {
         mutableStateOf(0)
@@ -100,8 +101,12 @@ fun BottonNavigationBar(items:List<BottonNavigationItem>,
     }
 }
 
+
+
 @Composable
-fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues){
+fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues) {
+
+
     NavHost(navController =navHostController , startDestination = TitleBottonNavigation.Home.name, modifier = Modifier.padding(paddingValues) ){
         composable(TitleBottonNavigation.Home.name){
             Home()
@@ -110,10 +115,32 @@ fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: P
             Statistical()
         }
         composable(TitleBottonNavigation.Manage.name){
-            Manage()
+            Manage(navHostController)
         }
         composable(TitleBottonNavigation.Help.name){
             Help()
+        }
+        composable("ManageCategory"){
+            CategoryScreen(navHostController)
+        }
+        composable("AddCategory"){
+            AddCategory(navHostController)
+        }
+        composable("UpdateCategory"){
+            CategoryScreen2(navHostController)
+        }
+
+        composable("ManageDish"){
+            DishScreen(navHostController)
+        }
+        composable("AddDish"){
+            AddDish(navHostController)
+        }
+        composable("ManagerDish"){
+            ManagerDish(navHostController)
+        }
+        composable("UpdateDish"){
+            UpdateDish(navHostController)
         }
     }
 }
