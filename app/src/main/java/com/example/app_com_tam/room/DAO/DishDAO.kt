@@ -13,7 +13,7 @@ interface DishDAO{
     @Insert
     suspend fun addDish(dish: Dish)
 
-    @Query("Select * FROM Dish")
+    @Query("Select * FROM dishs")
     fun getAllDish(): Flow<List<Dish>>
 
     @Delete

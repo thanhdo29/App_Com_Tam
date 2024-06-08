@@ -2,12 +2,14 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
 
-    kotlin("kapt")
+    id("kotlin-android")
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.example.app_com_tam"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.example.app_com_tam"
@@ -73,4 +75,8 @@ dependencies {
 
     implementation ("androidx.room:room-runtime:2.6.1")
     kapt ("androidx.room:room-compiler:2.6.1")
+
+    implementation ("androidx.room:room-ktx:2.6.1")
+
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.26.3-beta")
 }
