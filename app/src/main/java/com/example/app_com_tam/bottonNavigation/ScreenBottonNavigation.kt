@@ -1,5 +1,8 @@
 package com.example.app_com_tam.bottonNavigation
 
+import com.example.app_com_tam.ui.theme.Amber
+
+import CategoryScreen2
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,9 +34,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.app_com_tam.screens.Help
 import com.example.app_com_tam.screens.Home
-import com.example.app_com_tam.screens.Manage
+import com.example.app_com_tam.screens.manager.Manage
 import com.example.app_com_tam.screens.Statistical
-import com.example.app_com_tam.ui.theme.Amber
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.White
 import androidx.compose.runtime.*
@@ -45,6 +47,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app_com_tam.R
+import com.example.app_com_tam.repository.Repository
+import com.example.app_com_tam.screens.category.AddCategory
+import com.example.app_com_tam.screens.category.CategoryScreen
+import com.example.app_com_tam.screens.dish.AddDish
+import com.example.app_com_tam.screens.dish.DeleteDish
+import com.example.app_com_tam.screens.dish.DishScreen
+import com.example.app_com_tam.screens.dish.ManagerDish
+import com.example.app_com_tam.screens.dish.UpdateDish
+import com.example.app_com_tam.viewModel.DishViewModel
+import com.example.app_com_tam.viewModel.TypeDishViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 enum class TitleBottonNavigation{
@@ -62,7 +74,8 @@ data class BottonNavigationItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenBottonNavigation() {
+fun ScreenBottonNavigation(repository: Repository) {
+
     val navController= rememberNavController()
     var selectItem by remember {
         mutableStateOf(0)
@@ -90,7 +103,7 @@ fun ScreenBottonNavigation() {
             }
         ) {
             paddingValue->
-            BottonNavigationGraph(navHostController = navController, paddingValues = paddingValue)
+            BottonNavigationGraph(navHostController = navController, paddingValues = paddingValue,repository)
         }
     }
 }
@@ -132,8 +145,12 @@ fun BottonNavigationBar(items:List<BottonNavigationItem>,
     }
 }
 
+
+
 @Composable
-fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues){
+fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues, repository: Repository) {
+
+
     NavHost(navController =navHostController , startDestination = TitleBottonNavigation.Home.name, modifier = Modifier.padding(paddingValues) ){
         composable(TitleBottonNavigation.Home.name){
             Home()
@@ -142,10 +159,32 @@ fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: P
             Statistical()
         }
         composable(TitleBottonNavigation.Manage.name){
-            Manage()
+            Manage(navHostController)
         }
         composable(TitleBottonNavigation.Help.name){
             Help()
+        }
+        composable("ManageCategory"){
+            CategoryScreen(navHostController)
+        }
+        composable("AddCategory"){
+            AddCategory(navHostController, typeDishViewModel = TypeDishViewModel(repository))
+        }
+        composable("UpdateCategory"){
+            CategoryScreen2(navHostController,typeDishViewModel = TypeDishViewModel(repository))
+        }
+
+        composable("ManageDish"){
+            DishScreen(navHostController)
+        }
+        composable("AddDish"){
+            AddDish(navHostController, typeDishViewModel = TypeDishViewModel(repository), dishViewModel = DishViewModel(repository))
+        }
+        composable("ManagerDish"){
+            ManagerDish(navHostController)
+        }
+        composable("UpdateDish"){
+            UpdateDish(navHostController)
         }
     }
 }

@@ -30,6 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.app_com_tam.R
+import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.Login
 import com.example.app_com_tam.screens.Signup
 import com.example.app_com_tam.screens.Welcom
@@ -44,7 +45,7 @@ enum class ROUTE_NAME{
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppNavHost(navHostController: NavHostController) {
+fun AppNavHost(navHostController: NavHostController, repository: Repository) {
     val systemUiController = rememberSystemUiController()
     val statusBarColor = Dark_Charcoa
     SideEffect {
@@ -82,14 +83,14 @@ fun AppNavHost(navHostController: NavHostController) {
             }
         ) {
             paddingValues ->
-            NavigationGraph(navHostController = navHostController, paddingValues = paddingValues)
+            NavigationGraph(navHostController = navHostController, paddingValues = paddingValues, repository = repository)
         }
     }
 
 }
 
 @Composable
-fun NavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues) {
+fun NavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues,repository: Repository) {
     NavHost(navController = navHostController, startDestination = ROUTE_NAME.welcom.name ){
         composable(ROUTE_NAME.welcom.name){
             Welcom(navHostController)
@@ -98,7 +99,7 @@ fun NavigationGraph(navHostController: NavHostController, paddingValues: Padding
             Login(navHostController)
         }
         composable(ROUTE_NAME.app.name){
-            ScreenBottonNavigation()
+            ScreenBottonNavigation(repository =repository )
         }
         composable(ROUTE_NAME.signup.name){
             Signup()

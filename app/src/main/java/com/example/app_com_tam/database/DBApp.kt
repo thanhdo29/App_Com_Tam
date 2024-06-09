@@ -12,7 +12,7 @@ import com.example.app_com_tam.room.DAO.OrderDAO
 import com.example.app_com_tam.room.DAO.TypeDishDAO
 import com.example.app_com_tam.room.DAO.UserDAO
 
-@Database(entities = [User::class, Dish::class, TypeDish::class, Order::class], version = 10)
+@Database(entities = [User::class, Dish::class, TypeDish::class, Order::class], version = 15)
 abstract class DBApp : RoomDatabase() {
     abstract fun dishDAO(): DishDAO
     abstract fun typeDishDAO(): TypeDishDAO

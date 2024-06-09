@@ -10,6 +10,6 @@ data class Dish(
     @ColumnInfo(name = "nameDish") var nameDish: String,
     @ColumnInfo(name = "priceDish") var priceDish: Double,
     @ColumnInfo(name = "idTypeDish") var idTypeDish: Int,
-    @ColumnInfo(name = "imgDish") var imgDish: Int,
-    @ColumnInfo(name = "desDish") var desDish: Int,
+    @ColumnInfo(name = "imgDish") var imgDish: String,
+    @ColumnInfo(name = "desDish") var desDish: String,
 )

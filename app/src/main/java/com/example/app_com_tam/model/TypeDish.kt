@@ -8,5 +8,4 @@ import androidx.room.PrimaryKey
 data class TypeDish(
     @PrimaryKey(autoGenerate = true) var idTypeDish:Int=0,
     @ColumnInfo(name = "nameType") var nameType:String,
-    @ColumnInfo(name = "imgType") var imgType:String
 )
