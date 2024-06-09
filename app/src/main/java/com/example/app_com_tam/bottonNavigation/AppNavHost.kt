@@ -32,6 +32,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.app_com_tam.R
 import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.Login
+import com.example.app_com_tam.screens.Signup
 import com.example.app_com_tam.screens.Welcom
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.Dark_Charcoa
@@ -39,7 +40,7 @@ import com.example.app_com_tam.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 enum class ROUTE_NAME{
-    login,welcom,app
+    login,welcom,app,signup
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,6 +100,9 @@ fun NavigationGraph(navHostController: NavHostController, paddingValues: Padding
         }
         composable(ROUTE_NAME.app.name){
             ScreenBottonNavigation(repository =repository )
+        }
+        composable(ROUTE_NAME.signup.name){
+            Signup()
         }
     }
 }
