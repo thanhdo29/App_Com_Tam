@@ -1,47 +1,19 @@
 package com.example.app_com_tam.screens.dish
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,98 +25,79 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.app_com_tam.R
+import com.example.app_com_tam.model.Dish
+import com.example.app_com_tam.screens.category.DeleteDish
+import com.example.app_com_tam.ui.theme.Black_Medium
+import com.example.app_com_tam.ui.theme.Dark_Charcoa
+import com.example.app_com_tam.viewModel.DishViewModel
 
-data class MenuItem(val id: Int, val name: String, val price: String, val image: Int)
-
-val items = listOf(
-    MenuItem(1, "Sườn bì", "28K", R.drawable.comtam),
-    MenuItem(2, "Bì chả", "25K", R.drawable.comtam),
-    MenuItem(3, "Trứng chả", "25K", R.drawable.comtam),
-    MenuItem(4, "Sườn chả", "28K", R.drawable.comtam),
-    MenuItem(5, "Sườn bì chả", "35K", R.drawable.comtam),
-    MenuItem(6, "Sườn cay", "35K", R.drawable.comtam),
-    MenuItem(7, "Sườn trứng", "30K", R.drawable.comtam),
-    MenuItem(8, "Sườn trứng", "30K", R.drawable.comtam),
-    MenuItem(9, "Sườn trứng", "30K", R.drawable.comtam),
-    MenuItem(10, "Sườn trứng", "30K", R.drawable.comtam),
-)
-
-//hàm quản lí dish
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ManagerDish(navController: NavController){
-    Scaffold(
-        topBar = {
-            Column(Modifier.fillMaxWidth()) {
-                TopAppBar(
-                    title = {
-                        Row (modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically) {
+fun ManagerDish(navController: NavController, dishViewModel: DishViewModel) {
+    val dishs by dishViewModel.dishs.collectAsState(initial = emptyList())
+    var showDialogDelete by remember { mutableStateOf(false) }
+    var selectedDishDelete by remember { mutableStateOf<Dish?>(null) }
 
-                            Image(
-                                painter = painterResource(id = R.drawable.logo),
-                                contentDescription ="",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier.fillMaxWidth(0.12f)
-                            )
-                            Text(text = "Cum tứm đim")
 
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xff252121),
-                        titleContentColor = Color.White,
-                    ),
+        ManegerDish(dishs, navController, dishViewModel, showDialogDelete, selectedDishDelete)
 
-                    )
-                Divider(thickness = 2.dp, color = Color.Black)
+
+    if (showDialogDelete && selectedDishDelete != null) {
+        DeleteDish(
+            onConfirmation = {
+                dishViewModel.deleteDish(selectedDishDelete!!)
+                showDialogDelete = false
+                selectedDishDelete = null
+            },
+            onDismiss = {
+                showDialogDelete = false
+                selectedDishDelete = null
             }
-
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navController.navigate("AddDish")
-            }, contentColor = Color.White, containerColor = Color(0xFF2F2D2D)) {
-                Icon(imageVector = Icons.Rounded.Add,
-                    contentDescription = "Add new category")
-
-            }
-        },
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF252121))){
-        ManegerDish(items, navigationController = navController)
+        )
     }
 }
+
 @Composable
-fun ManegerDish(items: List<MenuItem>, navigationController: NavController) {
-
-
+fun ManegerDish(
+    items: List<Dish>,
+    navController: NavController,
+    dishViewModel: DishViewModel,
+    showDialogDelete: Boolean,
+    selectedDishDelete: Dish?
+) {
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top=50.dp)
+            .fillMaxSize().background(color = Dark_Charcoa)
+            .padding(top = 80.dp).padding(horizontal = 20.dp)
     ) {
         itemsIndexed(items) { index, item ->
-            MenuItemCard(index + 1, item, navController = navigationController)
+            MenuItemCard(index + 1, item, navController, dishViewModel, showDialogDelete, selectedDishDelete)
         }
     }
-
-
-
 }
+
 @Composable
-fun MenuItemCard(order: Int, item: MenuItem, navController: NavController) {
+fun MenuItemCard(
+    order: Int,
+    item: Dish,
+    navController: NavController,
+    dishViewModel: DishViewModel,
+    showDialogDelete: Boolean,
+    selectedDishDelete: Dish?
+) {
+    var showDialogDeleteState by remember { mutableStateOf(showDialogDelete) }
+    var selectedDishDeleteState by remember { mutableStateOf(selectedDishDelete) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF2F2D2D))
+        colors = CardDefaults.cardColors(containerColor = Black_Medium)
     ) {
         Row(modifier = Modifier.padding(8.dp)) {
             Text(
@@ -155,22 +108,32 @@ fun MenuItemCard(order: Int, item: MenuItem, navController: NavController) {
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Image(
-                painter = painterResource(id = item.image),
-                contentDescription = item.name,
+            AsyncImage(
+                model = item.imgDish,
+                contentDescription = "",
                 modifier = Modifier
                     .size(64.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(8.dp))
+
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                Text(text = item.name, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                Text(text = item.price, fontSize = 16.sp, color = Color(0xFFFE724C))
+                Text(
+                    text = item.nameDish,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    text = item.priceDish.toString(),
+                    fontSize = 16.sp,
+                    color = Color(0xFFFE724C)
+                )
             }
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
@@ -186,7 +149,10 @@ fun MenuItemCard(order: Int, item: MenuItem, navController: NavController) {
                 )
             }
             IconButton(
-                onClick = { /* Handle delete action */ },
+                onClick = {
+                    showDialogDeleteState = true
+                    selectedDishDeleteState = item
+                },
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.CenterVertically)
@@ -199,12 +165,26 @@ fun MenuItemCard(order: Int, item: MenuItem, navController: NavController) {
             }
         }
     }
+
+    if (showDialogDeleteState && selectedDishDeleteState != null) {
+        DeleteDish(
+            onConfirmation = {
+                dishViewModel.deleteDish(selectedDishDeleteState!!)
+                showDialogDeleteState = false
+                selectedDishDeleteState = null
+            },
+            onDismiss = {
+                showDialogDeleteState = false
+                selectedDishDeleteState = null
+            }
+        )
+    }
 }
 
-//Hàm updateDish
+// Hàm updateDish
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateDish(navController: NavController){
+fun UpdateDish(navController: NavController) {
     var price by remember { mutableStateOf(TextFieldValue("100k")) }
     var foodName by remember { mutableStateOf(TextFieldValue("Sườn")) }
 
@@ -215,7 +195,6 @@ fun UpdateDish(navController: NavController){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         SmallTopAppBar(
             title = { Text("Update", color = Color.White) },
             navigationIcon = {
@@ -285,5 +264,4 @@ fun UpdateDish(navController: NavController){
             Text("Sửa", color = Color.White, fontSize = 18.sp)
         }
     }
-
 }

@@ -57,30 +57,30 @@ fun CategoryScreen(navController: NavController
                 modifier = Modifier.fillMaxWidth(0.15f)
             )
             Text(
-                text = "Sửa loại món ăn",
+                text = "Sửa/Xóa loại món ăn",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(start = 10.dp)
             )
         }
-        Row (
-
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "",
-                modifier = Modifier.fillMaxWidth(0.15f)
-            )
-            Text(
-                text = "Xóa loại món ăn",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(start = 10.dp)
-            )
-        }
+//        Row (
+//
+//            verticalAlignment = Alignment.CenterVertically
+//        ){
+//            Image(
+//                painter = painterResource(id = R.drawable.logo),
+//                contentDescription = "",
+//                modifier = Modifier.fillMaxWidth(0.15f)
+//            )
+//            Text(
+//                text = "Xóa loại món ăn",
+//                color = Color.White,
+//                fontWeight = FontWeight.Bold,
+//                fontSize = 20.sp,
+//                modifier = Modifier.padding(start = 10.dp)
+//            )
+//        }
     }
 }
 

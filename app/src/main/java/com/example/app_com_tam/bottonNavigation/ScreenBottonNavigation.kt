@@ -51,7 +51,6 @@ import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.category.AddCategory
 import com.example.app_com_tam.screens.category.CategoryScreen
 import com.example.app_com_tam.screens.dish.AddDish
-import com.example.app_com_tam.screens.dish.DeleteDish
 import com.example.app_com_tam.screens.dish.DishScreen
 import com.example.app_com_tam.screens.dish.ManagerDish
 import com.example.app_com_tam.screens.dish.UpdateDish
@@ -177,14 +176,15 @@ fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: P
         composable("ManageDish"){
             DishScreen(navHostController)
         }
-        composable("AddDish"){
-            AddDish(navHostController, typeDishViewModel = TypeDishViewModel(repository), dishViewModel = DishViewModel(repository))
-        }
+
         composable("ManagerDish"){
-            ManagerDish(navHostController)
+            ManagerDish(navHostController, dishViewModel = DishViewModel(repository))
         }
         composable("UpdateDish"){
             UpdateDish(navHostController)
+        }
+        composable(ROUTE_NAME.AddDish.name){
+            AddDish(navHostController, typeDishViewModel = TypeDishViewModel(repository), dishViewModel = DishViewModel(repository))
         }
     }
 }
