@@ -55,6 +55,9 @@ import androidx.navigation.NavController
 import com.example.app_com_tam.R
 import com.example.app_com_tam.model.TypeDish
 import com.example.app_com_tam.screens.category.DialogDelete
+import com.example.app_com_tam.ui.theme.Black_Medium
+import com.example.app_com_tam.ui.theme.Dark_Charcoa
+import com.example.app_com_tam.ui.theme.White
 import com.example.app_com_tam.viewModel.TypeDishViewModel
 
 data class FoodItem(val name: String)
@@ -94,7 +97,7 @@ fun CategoryScreen2(navController: NavController, typeDishViewModel: TypeDishVie
 
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize().background(color = Dark_Charcoa)
             .padding(top = 70.dp)
     ) {
         items(cates) { cate ->
@@ -123,22 +126,24 @@ fun TypeDishRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .background(Color.White)
-            .padding(16.dp),
+            .background(color = Black_Medium)
+            .padding(16.dp).padding(horizontal = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = typeDish.nameType, style = MaterialTheme.typography.bodyLarge)
+        Text(text = typeDish.nameType, style = MaterialTheme.typography.bodyLarge, color = White)
         Row {
             IconButton(onClick = onEditClick) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_create_24),
-                    contentDescription = "Edit"
+                    contentDescription = "Edit",
+                    tint = White
                 )
             }
             IconButton(onClick = onDeleteClick) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_delete_24),
-                    contentDescription = "Delete"
+                    contentDescription = "Delete",
+                    tint = White
                 )
             }
         }

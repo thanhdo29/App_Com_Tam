@@ -17,34 +17,23 @@ import com.example.app_com_tam.database.DBApp
 import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.ui.theme.App_Com_TamTheme
 
-lateinit var DATABASE_INSTANCE : DBApp
 class MainActivity : ComponentActivity() {
 
-    val database by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            DBApp::class.java,"comtam.db"
-        ).addMigrations(MIGRATION_10_15).build()
-    }
-
-    val MIGRATION_10_15 = object : Migration(10, 15) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("ALTER TABLE dishs RENAME TO temp_tableName")
-            database.execSQL("CREATE TABLE IF NOT EXISTS dishs (idDish INTEGER PRIMARY KEY, nameDish TEXT, priceDish REAL, idTypeDish INTEGER, imgDish TEXT, desDish TEXT)")
-            database.execSQL("INSERT INTO dishs (idDish, nameDish, priceDish, idTypeDish, imgDish, desDish) SELECT idDish, nameDish, priceDish, idTypeDish, imgDish, CAST(desDish AS TEXT) FROM temp_tableName")
-            database.execSQL("DROP TABLE IF EXISTS temp_tableName")
-        }
-    }
-
+    lateinit var database: DBApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DATABASE_INSTANCE=database
-        val repository:Repository=Repository(database)
+
+        database = Room.databaseBuilder(
+            applicationContext,
+            DBApp::class.java,
+            "comtam.db"
+        ).addMigrations(MIGRATION_10_16).build()
+
+        val repository = Repository(database)
+
         setContent {
             App_Com_TamTheme {
-
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -58,6 +47,26 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppCom(repository: Repository) {
-    val navController= rememberNavController()
-    AppNavHost(navHostController = navController,repository)
+    val navController = rememberNavController()
+    AppNavHost(navHostController = navController, repository)
+}
+
+val MIGRATION_10_16 = object : Migration(10, 16) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE dishs RENAME TO temp_dishs")
+        database.execSQL("CREATE TABLE IF NOT EXISTS dishs (idDish INTEGER PRIMARY KEY NOT NULL, nameDish TEXT NOT NULL, priceDish REAL NOT NULL, idTypeDish INTEGER NOT NULL, imgDish TEXT NOT NULL, desDish TEXT NOT NULL)")
+        database.execSQL("INSERT INTO dishs (idDish, nameDish, priceDish, idTypeDish, imgDish, desDish) SELECT idDish, nameDish, priceDish, idTypeDish, imgDish, desDish FROM temp_dishs")
+        database.execSQL("DROP TABLE IF EXISTS temp_dishs")
+
+        database.execSQL("ALTER TABLE TypeDish RENAME TO temp_TypeDish")
+
+        // Tạo lại bảng TypeDish với cấu trúc mới
+        database.execSQL("CREATE TABLE IF NOT EXISTS TypeDish (idTypeDish INTEGER PRIMARY KEY NOT NULL, nameType TEXT NOT NULL)")
+
+        // Sao chép dữ liệu từ bảng backup vào bảng mới
+        database.execSQL("INSERT INTO TypeDish (idTypeDish, nameType) SELECT idTypeDish, nameType FROM temp_TypeDish")
+
+        // Xóa bảng backup
+        database.execSQL("DROP TABLE IF EXISTS temp_TypeDish")
+    }
 }

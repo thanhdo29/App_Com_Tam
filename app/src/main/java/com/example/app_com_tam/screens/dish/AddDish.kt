@@ -47,6 +47,7 @@ import androidx.navigation.NavController
 import com.example.app_com_tam.model.Dish
 import com.example.app_com_tam.model.TypeDish
 import com.example.app_com_tam.ui.theme.App_Com_TamTheme
+import com.example.app_com_tam.ui.theme.Dark_Charcoa
 import com.example.app_com_tam.viewModel.DishViewModel
 import com.example.app_com_tam.viewModel.TypeDishViewModel
 
@@ -63,25 +64,24 @@ fun AddDish(navController: NavController, typeDishViewModel: TypeDishViewModel, 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(40.dp)
             .verticalScroll(scrollState)
-            .background(color = Color.Black),
+            .background(color = Dark_Charcoa).padding(horizontal =  24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        SmallTopAppBar(
-            title = { Text("Add", color = Color.White) },
-            navigationIcon = {
-                IconButton(
-                    onClick = { navController.popBackStack() }
-                ) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
-                }
-            },
-            colors = TopAppBarDefaults.smallTopAppBarColors(
-                containerColor = Color(0xFF252121)
-            )
-        )
+//        SmallTopAppBar(
+//            title = { Text("Add", color = Color.White) },
+//            navigationIcon = {
+//                IconButton(
+//                    onClick = { navController.popBackStack() }
+//                ) {
+//                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+//                }
+//            },
+//            colors = TopAppBarDefaults.smallTopAppBarColors(
+//                containerColor = Color(0xFF252121)
+//            )
+//        )
 
         Spacer(modifier = Modifier.height(16.dp))
 

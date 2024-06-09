@@ -34,13 +34,17 @@ import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.Login
 import com.example.app_com_tam.screens.Signup
 import com.example.app_com_tam.screens.Welcom
+import com.example.app_com_tam.screens.dish.AddDish
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.Dark_Charcoa
 import com.example.app_com_tam.ui.theme.White
+import com.example.app_com_tam.viewModel.DishViewModel
+import com.example.app_com_tam.viewModel.TypeDishViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 enum class ROUTE_NAME{
-    login,welcom,app,signup
+    login,welcom,app,signup,
+    AddDish
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +63,7 @@ fun AppNavHost(navHostController: NavHostController, repository: Repository) {
     Surface {
         Scaffold(
             topBar = {
-                if (currentRoute!= ROUTE_NAME.welcom.name && currentRoute!= ROUTE_NAME.login.name){
+                if (currentRoute!= ROUTE_NAME.welcom.name && currentRoute!= ROUTE_NAME.login.name && currentRoute!= ROUTE_NAME.AddDish.name){
                     TopAppBar(title = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Image(painter = painterResource(id = R.drawable.logo), contentDescription ="", modifier = Modifier.size(57 .dp, 48.dp) )
@@ -96,7 +100,7 @@ fun NavigationGraph(navHostController: NavHostController, paddingValues: Padding
             Welcom(navHostController)
         }
         composable(ROUTE_NAME.login.name){
-            Login(navHostController)
+            Login(navHostController, repository)
         }
         composable(ROUTE_NAME.app.name){
             ScreenBottonNavigation(repository =repository )
@@ -104,5 +108,6 @@ fun NavigationGraph(navHostController: NavHostController, paddingValues: Padding
         composable(ROUTE_NAME.signup.name){
             Signup()
         }
+
     }
 }

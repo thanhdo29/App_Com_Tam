@@ -68,6 +68,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core:1.0.1")
     implementation("androidx.compose.material:material-icons-extended:1.0.1")
     //asyc image
+
     implementation("io.coil-kt:coil-gif:2.6.0")
 
     implementation(libs.androidx.core.ktx)
@@ -78,7 +79,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.transportation.consumer)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -96,14 +96,11 @@ dependencies {
 
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.26.3-beta")
 
-<<<<<<< HEAD
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
-=======
     implementation("androidx.compose.material:material-icons-core:1.0.1")
     implementation("androidx.compose.material:material-icons-extended:1.0.1")
 
 
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+
     implementation("io.coil-kt:coil-compose:2.6.0")
->>>>>>> eebf710ba0e2cac2b0e0676f779996e81557a5ed
 }

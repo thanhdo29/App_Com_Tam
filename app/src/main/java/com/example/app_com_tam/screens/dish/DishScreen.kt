@@ -57,30 +57,30 @@ fun DishScreen(navController: NavController){
                 modifier = Modifier.fillMaxWidth(0.15f)
             )
             Text(
-                text = "Sủa món ăn",
+                text = "Sửa/Xóa món ăn",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(start = 10.dp)
             )
         }
-        Row (
-            modifier = Modifier.clickable { navController.navigate("DeleteDish") },
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "",
-                modifier = Modifier.fillMaxWidth(0.15f)
-            )
-            Text(
-                text = "Xóa món ăn",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(start = 10.dp)
-            )
-        }
+//        Row (
+//            modifier = Modifier.clickable { navController.navigate("DeleteDish") },
+//            verticalAlignment = Alignment.CenterVertically
+//        ){
+//            Image(
+//                painter = painterResource(id = R.drawable.logo),
+//                contentDescription = "",
+//                modifier = Modifier.fillMaxWidth(0.15f)
+//            )
+//            Text(
+//                text = "Xóa món ăn",
+//                color = Color.White,
+//                fontWeight = FontWeight.Bold,
+//                fontSize = 20.sp,
+//                modifier = Modifier.padding(start = 10.dp)
+//            )
+//        }
     }
 
 }

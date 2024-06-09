@@ -52,13 +52,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.app_com_tam.DATABASE_INSTANCE
+import com.example.app_com_tam.repository.Repository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login(navHostController: NavHostController) {
+fun Login(navHostController: NavHostController, repository: Repository) {
 
-    val loginViewModel=LoginViewModel(DATABASE_INSTANCE.userDao())
+    val loginViewModel=LoginViewModel(repository.dbApp.userDao())
     loginViewModel.insertSampleAdminIfNeeded()
 
     val isAuthenticated by loginViewModel.isAuthenticated.observeAsState()
@@ -201,7 +201,7 @@ fun Login(navHostController: NavHostController) {
                     RoundedCornerShape(16.dp))
             ) {
                 Text(
-                    text = "Log In",
+                    text = "Đăng nhâp",
                     color = Color(0XFFFFFFFF),
                     fontSize = 20.sp,
                 )

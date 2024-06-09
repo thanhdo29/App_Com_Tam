@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -53,9 +54,7 @@ fun AddCategory (
             containerColor = Color.White,
         ),
         modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(horizontal = 40.dp),
+            .fillMaxSize(),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp,
         ),
