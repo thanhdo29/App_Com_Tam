@@ -29,11 +29,11 @@ fun Manage(navController: NavController) {
         .fillMaxSize()
         .background(color = Color(0xff252121))
         .padding(horizontal = 20.dp)
-        .padding(top = 20.dp)
+        .padding(top = 40.dp)
     ){
         //Loại món ăn
     Row (
-        modifier = Modifier.clickable { navController.navigate("ManageCategory") },
+        modifier = Modifier.padding(top = 50.dp).clickable { navController.navigate("ManageCategory") },
         verticalAlignment = Alignment.CenterVertically
     ){
         Image(

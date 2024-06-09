@@ -54,7 +54,9 @@ fun DialogDelete(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically) {
                     Button(
-                        onClick = onConfirmation,
+                        onClick = {
+                                  onConfirmation()
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFFB703),
                             contentColor = Color.White

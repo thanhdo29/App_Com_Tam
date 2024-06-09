@@ -126,7 +126,7 @@ fun ManegerDish(items: List<MenuItem>, navigationController: NavController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .padding(top=50.dp)
     ) {
         itemsIndexed(items) { index, item ->
             MenuItemCard(index + 1, item, navController = navigationController)

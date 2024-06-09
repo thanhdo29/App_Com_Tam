@@ -31,7 +31,7 @@ fun DishScreen(navController: NavController){
             .padding(top = 20.dp)
     ){
         Row (
-            modifier = Modifier.clickable { navController.navigate("AddDish") },
+            modifier = Modifier.padding(top = 40.dp).clickable { navController.navigate("AddDish") },
             verticalAlignment = Alignment.CenterVertically
         ){
             Image(

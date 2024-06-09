@@ -1,3 +1,4 @@
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,62 +53,72 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.app_com_tam.R
+import com.example.app_com_tam.model.TypeDish
 import com.example.app_com_tam.screens.category.DialogDelete
+import com.example.app_com_tam.viewModel.TypeDishViewModel
 
 data class FoodItem(val name: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryScreen2(navController: NavController) {
+fun CategoryScreen2(navController: NavController, typeDishViewModel: TypeDishViewModel) {
+    val cates by typeDishViewModel.typeDishs.collectAsState(initial = emptyList())
     var showDialogDelete by remember { mutableStateOf(false) }
+    var showDialogEdit by remember { mutableStateOf(false) }
+    var selectedTypeDish by remember { mutableStateOf<TypeDish?>(null) }
+    var selectedTypeDishUpdate by remember { mutableStateOf<TypeDish?>(null) }
+
     if (showDialogDelete) {
         DialogDelete(
             onConfirmation = {
-
+                selectedTypeDish?.let { typeDishViewModel.deleteTypeDish(it) }
                 showDialogDelete = false
             },
             onDismiss = { showDialogDelete = false }
         )
     }
-    var showDialogEdit by remember { mutableStateOf(false) }
+
     if (showDialogEdit) {
-        DialogEdit(
-            currentName: String,
-            onConfirmation = {
-
-                showDialogEdit = false
-            },
-            onDismiss = { showDialogEdit = false }
-        )
-    }
-    val foodList = listOf(
-        FoodItem("Pizza"),
-        FoodItem("Burger"),
-        FoodItem("Sushi"),
-        FoodItem("Pasta"),
-        FoodItem("Salad")
-    )
-    val context = LocalContext.current
-
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        items(foodList) { foodItem ->
-            FoodItemRow(foodItem,
-                onEditClick = { showDialogEdit=true },
-                onDeleteClick = {showDialogDelete=true}
+        selectedTypeDishUpdate?.let { typeDish ->
+            DialogEdit(
+                onConfirmation = { updatedName ->
+                    val updatedTypeDish = typeDish.copy(nameType = updatedName)
+                    typeDishViewModel.updateTypeDish(updatedTypeDish)
+                    showDialogEdit = false
+                },
+                onDismiss = { showDialogEdit = false },
+                nameCateUpdate = typeDish.nameType
             )
         }
     }
 
-
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 70.dp)
+    ) {
+        items(cates) { cate ->
+            TypeDishRow(
+                typeDish = cate,
+                onEditClick = {
+                    selectedTypeDishUpdate = cate
+                    showDialogEdit = true
+                },
+                onDeleteClick = {
+                    selectedTypeDish = cate
+                    showDialogDelete = true
+                }
+            )
+        }
+    }
 }
-@Composable
-fun FoodItemRow(foodItem: FoodItem, onEditClick: () -> Unit, onDeleteClick: () -> Unit) {
 
+@Composable
+fun TypeDishRow(
+    typeDish: TypeDish,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -115,7 +127,7 @@ fun FoodItemRow(foodItem: FoodItem, onEditClick: () -> Unit, onDeleteClick: () -
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = foodItem.name, style = MaterialTheme.typography.bodyLarge)
+        Text(text = typeDish.nameType, style = MaterialTheme.typography.bodyLarge)
         Row {
             IconButton(onClick = onEditClick) {
                 Icon(
@@ -132,15 +144,14 @@ fun FoodItemRow(foodItem: FoodItem, onEditClick: () -> Unit, onDeleteClick: () -
         }
     }
 }
+
 @Composable
 fun DialogEdit(
-    currentName: String,
-    onConfirmation: () -> Unit,
-    onDismiss: () -> Unit
-
+    onConfirmation: (String) -> Unit,
+    onDismiss: () -> Unit,
+    nameCateUpdate: String
 ) {
-
-    var newName by remember { mutableStateOf(currentName) }
+    var nameCate by remember { mutableStateOf(nameCateUpdate) }
 
     Dialog(onDismissRequest = onDismiss) {
         AlertDialog(
@@ -155,29 +166,27 @@ fun DialogEdit(
             },
             text = {
                 OutlinedTextField(
-                    value = newName,
-                    onValueChange = { newName = it },
-                    label = { Text("Tên mới") }
+                    value = nameCate,
+                    onValueChange = { nameCate = it },
+                    modifier = Modifier.fillMaxWidth()
                 )
             },
-
             confirmButton = {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 15.dp),
+                        .padding(horizontal = 40.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
-                        onClick =onConfirmation,
-
-
+                        onClick = {
+                            onConfirmation(nameCate)
+                        },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFFB703),
-                            contentColor = Color.White
-                        ),
+                            contentColor = Color.White)
                     ) {
                         Text("Lưu")
                     }
@@ -186,17 +195,12 @@ fun DialogEdit(
                         onClick = onDismiss,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFFB703),
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier.weight(1f),
-
-                        ) {
+                            contentColor = Color.White)
+                    ) {
                         Text("Hủy")
                     }
                 }
-
             }
         )
     }
 }
-
