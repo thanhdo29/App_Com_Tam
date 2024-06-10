@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             DBApp::class.java,
             "comtam.db"
-        ).addMigrations(MIGRATION_10_16).build()
+        ).addMigrations(MIGRATION_10_17).build()
 
         val repository = Repository(database)
 
@@ -51,7 +51,7 @@ fun AppCom(repository: Repository) {
     AppNavHost(navHostController = navController, repository)
 }
 
-val MIGRATION_10_16 = object : Migration(10, 16) {
+val MIGRATION_10_17 = object : Migration(16, 17) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE dishs RENAME TO temp_dishs")
         database.execSQL("CREATE TABLE IF NOT EXISTS dishs (idDish INTEGER PRIMARY KEY NOT NULL, nameDish TEXT NOT NULL, priceDish REAL NOT NULL, idTypeDish INTEGER NOT NULL, imgDish TEXT NOT NULL, desDish TEXT NOT NULL)")

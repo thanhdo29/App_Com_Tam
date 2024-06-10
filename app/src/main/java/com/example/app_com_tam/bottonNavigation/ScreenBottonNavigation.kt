@@ -46,7 +46,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavType
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 import com.example.app_com_tam.R
+import com.example.app_com_tam.model.Dish
 import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.category.AddCategory
 import com.example.app_com_tam.screens.category.CategoryScreen
@@ -54,6 +58,7 @@ import com.example.app_com_tam.screens.dish.AddDish
 import com.example.app_com_tam.screens.dish.DishScreen
 import com.example.app_com_tam.screens.dish.ManagerDish
 import com.example.app_com_tam.screens.dish.UpdateDish
+import com.example.app_com_tam.ui.theme.Dark_Charcoa
 import com.example.app_com_tam.viewModel.DishViewModel
 import com.example.app_com_tam.viewModel.TypeDishViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -180,9 +185,15 @@ fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: P
         composable("ManagerDish"){
             ManagerDish(navHostController, dishViewModel = DishViewModel(repository))
         }
-        composable("UpdateDish"){
-            UpdateDish(navHostController)
+        composable("UpdateDish/{dish}") { backStackEntry ->
+            val dish = backStackEntry.arguments?.getParcelable<Dish>("dish")
+            dish?.let { dish ->
+                UpdateDish(navHostController, dish, dishViewModel = DishViewModel(repository))
+            } ?: run {
+                Text("Dish not found")
+            }
         }
+
         composable(ROUTE_NAME.AddDish.name){
             AddDish(navHostController, typeDishViewModel = TypeDishViewModel(repository), dishViewModel = DishViewModel(repository))
         }

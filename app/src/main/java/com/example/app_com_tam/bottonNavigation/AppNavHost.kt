@@ -1,5 +1,6 @@
 package com.example.app_com_tam.bottonNavigation
 
+import CategoryScreen2
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -34,7 +35,12 @@ import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.Login
 import com.example.app_com_tam.screens.Signup
 import com.example.app_com_tam.screens.Welcom
+import com.example.app_com_tam.screens.category.AddCategory
+import com.example.app_com_tam.screens.category.CategoryScreen
 import com.example.app_com_tam.screens.dish.AddDish
+import com.example.app_com_tam.screens.dish.DishScreen
+import com.example.app_com_tam.screens.dish.ManagerDish
+import com.example.app_com_tam.screens.dish.UpdateDish
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.Dark_Charcoa
 import com.example.app_com_tam.ui.theme.White
@@ -52,13 +58,14 @@ enum class ROUTE_NAME{
 fun AppNavHost(navHostController: NavHostController, repository: Repository) {
     val systemUiController = rememberSystemUiController()
     val statusBarColor = Dark_Charcoa
+    val currentRoute = navHostController.currentBackStackEntryAsState().value?.destination?.route
+
     SideEffect {
         systemUiController.setStatusBarColor(
             color = statusBarColor,
             darkIcons = false // Thay đổi thành true nếu bạn muốn biểu tượng tối trên thanh trạng thái
         )
     }
-    val currentRoute = navHostController.currentBackStackEntryAsState().value?.destination?.route
 
     Surface {
         Scaffold(
@@ -72,7 +79,9 @@ fun AppNavHost(navHostController: NavHostController, repository: Repository) {
                         }
                     },
                         navigationIcon = {
-                            IconButton(onClick = { /*TODO*/ }) {
+                            IconButton(onClick = {
+                                navHostController.popBackStack()
+                            }) {
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowLeft,
                                     contentDescription = "",
@@ -86,7 +95,7 @@ fun AppNavHost(navHostController: NavHostController, repository: Repository) {
 
             }
         ) {
-            paddingValues ->
+                paddingValues ->
             NavigationGraph(navHostController = navHostController, paddingValues = paddingValues, repository = repository)
         }
     }
@@ -108,6 +117,8 @@ fun NavigationGraph(navHostController: NavHostController, paddingValues: Padding
         composable(ROUTE_NAME.signup.name){
             Signup()
         }
+
+
 
     }
 }

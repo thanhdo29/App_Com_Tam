@@ -14,7 +14,10 @@ interface DishDAO{
     suspend fun addDish(dish: Dish)
 
     @Query("Select * FROM dishs")
-    fun getAllDish(): Flow<List<Dish>>
+     fun getAllDish(): Flow<List<Dish>>
+
+    @Query("Select * FROM dishs Where idDish= :idDishUpdate LIMIT 1")
+    fun getDishById1(idDishUpdate:Int):Flow<Dish?>
 
     @Delete
     suspend fun deleteDish(dish: Dish)

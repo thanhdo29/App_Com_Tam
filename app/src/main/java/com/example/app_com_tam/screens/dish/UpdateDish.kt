@@ -1,7 +1,11 @@
 package com.example.app_com_tam.screens.dish
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import android.os.Bundle
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +18,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,8 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
 import com.example.app_com_tam.R
 import com.example.app_com_tam.model.Dish
+import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.category.DeleteDish
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.Dark_Charcoa
@@ -40,11 +47,9 @@ fun ManagerDish(navController: NavController, dishViewModel: DishViewModel) {
     val dishs by dishViewModel.dishs.collectAsState(initial = emptyList())
     var showDialogDelete by remember { mutableStateOf(false) }
     var selectedDishDelete by remember { mutableStateOf<Dish?>(null) }
+    var selectedDishUpdate by remember { mutableStateOf<Dish?>(null) }
 
-
-        ManegerDish(dishs, navController, dishViewModel, showDialogDelete, selectedDishDelete)
-
-
+    ManegerDish(dishs, navController, dishViewModel, showDialogDelete, selectedDishDelete,selectedDishUpdate)
     if (showDialogDelete && selectedDishDelete != null) {
         DeleteDish(
             onConfirmation = {
@@ -66,15 +71,18 @@ fun ManegerDish(
     navController: NavController,
     dishViewModel: DishViewModel,
     showDialogDelete: Boolean,
-    selectedDishDelete: Dish?
+    selectedDishDelete: Dish?,
+    selectedDishUpdate:Dish?
 ) {
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize().background(color = Dark_Charcoa)
-            .padding(top = 80.dp).padding(horizontal = 20.dp)
+            .fillMaxSize()
+            .background(color = Dark_Charcoa)
+            .padding(top = 80.dp)
+            .padding(horizontal = 20.dp)
     ) {
         itemsIndexed(items) { index, item ->
-            MenuItemCard(index + 1, item, navController, dishViewModel, showDialogDelete, selectedDishDelete)
+            MenuItemCard(index + 1, item, navController, dishViewModel, showDialogDelete, selectedDishDelete,selectedDishUpdate)
         }
     }
 }
@@ -86,10 +94,12 @@ fun MenuItemCard(
     navController: NavController,
     dishViewModel: DishViewModel,
     showDialogDelete: Boolean,
-    selectedDishDelete: Dish?
+    selectedDishDelete: Dish?,
+    selectedDishUpdate: Dish?
 ) {
     var showDialogDeleteState by remember { mutableStateOf(showDialogDelete) }
     var selectedDishDeleteState by remember { mutableStateOf(selectedDishDelete) }
+    var selectedDishUpdateState by remember { mutableStateOf(selectedDishUpdate) }
 
     Card(
         modifier = Modifier
@@ -137,7 +147,11 @@ fun MenuItemCard(
             }
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
-                onClick = { navController.navigate("UpdateDish") },
+                onClick = {
+                    navController.navigate("UpdateDish}"){
+
+                    }
+                          },
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.CenterVertically)
@@ -184,42 +198,42 @@ fun MenuItemCard(
 // Hàm updateDish
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateDish(navController: NavController) {
-    var price by remember { mutableStateOf(TextFieldValue("100k")) }
-    var foodName by remember { mutableStateOf(TextFieldValue("Sườn")) }
+fun UpdateDish(navController: NavController, dish: Dish, dishViewModel: DishViewModel) {
+    val selectDish by dishViewModel.selectedDish.observeAsState()
+
+    var imgDishUpdate by remember { mutableStateOf<Uri?>(null) }
+    var price by remember { mutableStateOf("") }
+    var foodName by remember { mutableStateOf("") }
+
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+        imgDishUpdate = uri
+    }
+
+
+
+
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .background(color = Dark_Charcoa),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        SmallTopAppBar(
-            title = { Text("Update", color = Color.White) },
-            navigationIcon = {
-                IconButton(
-                    onClick = { navController.popBackStack() }
-                ) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
-                }
-            },
-            colors = TopAppBarDefaults.smallTopAppBarColors(
-                containerColor = Color(0xFF252121)
-            )
-        )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         Box(
             modifier = Modifier
                 .size(200.dp)
                 .background(Color.Gray, shape = RoundedCornerShape(8.dp))
-                .clickable { /* Add image upload functionality */ },
+                .clickable {
+                    launcher.launch("image/*")
+                },
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.comtam),
+                painter = rememberImagePainter(data = ""),
                 contentDescription = "Sample Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
@@ -257,7 +271,7 @@ fun UpdateDish(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* Handle save action */ },
+            onClick = {Log.e("TeSt", dish.toString()) },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA000))
         ) {

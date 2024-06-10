@@ -1,5 +1,10 @@
 package com.example.app_com_tam.screens.dish
 
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,11 +44,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.app_com_tam.model.Dish
 import com.example.app_com_tam.model.TypeDish
 import com.example.app_com_tam.ui.theme.App_Com_TamTheme
@@ -57,15 +64,22 @@ fun AddDish(navController: NavController, typeDishViewModel: TypeDishViewModel, 
     var selectedDishType by remember { mutableStateOf<TypeDish?>(null) }
     var price by remember { mutableStateOf(TextFieldValue("")) }
     var foodName by remember { mutableStateOf(TextFieldValue("")) }
+    var imgDish by remember { mutableStateOf<Uri?>(null) }
     val scrollState = rememberScrollState()
 
     val listCate by typeDishViewModel.typeDishs.collectAsState(initial = emptyList())
+
+    val launcher= rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+        uri: Uri? ->
+        imgDish=uri
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .background(color = Dark_Charcoa).padding(horizontal =  24.dp),
+            .background(color = Dark_Charcoa)
+            .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -89,10 +103,21 @@ fun AddDish(navController: NavController, typeDishViewModel: TypeDishViewModel, 
             modifier = Modifier
                 .size(150.dp)
                 .background(Color.Gray, shape = RoundedCornerShape(8.dp))
-                .clickable { /* Add image upload functionality */ },
+                .clickable {
+                           launcher.launch("image/*")
+                },
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Thêm hình ảnh", color = Color.White)
+            if (imgDish != null) {
+                Image(
+                    painter = rememberImagePainter(data = imgDish),
+                    contentDescription = null,
+                    modifier = Modifier.size(150.dp),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Text(text = "Thêm hình ảnh", color = Color.White)
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -142,7 +167,7 @@ fun AddDish(navController: NavController, typeDishViewModel: TypeDishViewModel, 
                         nameDish = foodName.text,
                         priceDish = price.text.toDouble(),
                         idTypeDish = it.idTypeDish,
-                        imgDish = "https://assets.tronhouse.vn/59185068-4c44-404a-a5b6-493d1d50d13d/derived/p_l/chup-anh-mon-an-4.jpeg",
+                        imgDish = imgDish.toString(),
                         desDish = "ok"
                     )
                     dishViewModel.addDish(dish)
