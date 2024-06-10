@@ -15,3 +15,12 @@ data class Order(
     @ColumnInfo(name = "totalAmount") var totalAmount: Int,
     @ColumnInfo(name = "statusOrder") var statusOrder:Boolean
 )
+
+//val order1 = Order(
+//    id = 1,
+//    ngayGioPhut = Date(),
+//    idKhachHang = 1001,
+//    danhSachProductWantToBuy = listOf(productWantToBuy1, productWantToBuy2),
+//    trangThai = true,
+//    tongTien = productWantToBuy1.gia * productWantToBuy1.soLuong + productWantToBuy2.gia * productWantToBuy2.soLuong
+//)

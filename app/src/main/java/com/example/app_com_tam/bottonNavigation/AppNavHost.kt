@@ -1,5 +1,7 @@
 package com.example.app_com_tam.bottonNavigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -32,26 +34,35 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.app_com_tam.R
 import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.Login
-import com.example.app_com_tam.screens.Signup
+import com.example.app_com_tam.screens.OrderDetails
+import com.example.app_com_tam.screens.TestScreen
+
 import com.example.app_com_tam.screens.Welcom
 import com.example.app_com_tam.screens.dish.AddDish
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.Dark_Charcoa
 import com.example.app_com_tam.ui.theme.White
+import com.example.app_com_tam.viewModel.CartViewModel
 import com.example.app_com_tam.viewModel.DishViewModel
+import com.example.app_com_tam.viewModel.OrderViewModel
+
 import com.example.app_com_tam.viewModel.TypeDishViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 enum class ROUTE_NAME{
-    login,welcom,app,signup,
-    AddDish
+    login,welcom,app,orderdetails
+
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppNavHost(navHostController: NavHostController, repository: Repository) {
+fun AppNavHost(navHostController: NavHostController,repository: Repository) {
+
     val systemUiController = rememberSystemUiController()
     val statusBarColor = Dark_Charcoa
+    val orderViewModel=OrderViewModel(repository)
+
     SideEffect {
         systemUiController.setStatusBarColor(
             color = statusBarColor,
@@ -87,15 +98,18 @@ fun AppNavHost(navHostController: NavHostController, repository: Repository) {
             }
         ) {
             paddingValues ->
-            NavigationGraph(navHostController = navHostController, paddingValues = paddingValues, repository = repository)
+            NavigationGraph(navHostController = navHostController, paddingValues = paddingValues,repository)
+
         }
     }
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues,repository: Repository) {
-    NavHost(navController = navHostController, startDestination = ROUTE_NAME.welcom.name ){
+fun NavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues, repository: Repository) {
+    NavHost(navController = navHostController, startDestination = ROUTE_NAME.app.name ){
+
         composable(ROUTE_NAME.welcom.name){
             Welcom(navHostController)
         }
@@ -103,11 +117,10 @@ fun NavigationGraph(navHostController: NavHostController, paddingValues: Padding
             Login(navHostController, repository)
         }
         composable(ROUTE_NAME.app.name){
-            ScreenBottonNavigation(repository =repository )
+            ScreenBottonNavigation(repository)
         }
-        composable(ROUTE_NAME.signup.name){
-            Signup()
-        }
+
+
 
     }
 }

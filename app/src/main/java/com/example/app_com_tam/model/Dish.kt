@@ -7,10 +7,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "dishs")
 data class Dish(
-    @NonNull @PrimaryKey(autoGenerate = true) val idDish: Int = 0,
-    @NonNull @ColumnInfo(name = "nameDish") var nameDish: String,
-    @NonNull @ColumnInfo(name = "priceDish") var priceDish: Double,
-    @NonNull @ColumnInfo(name = "idTypeDish") var idTypeDish: Int,
-    @NonNull @ColumnInfo(name = "imgDish") var imgDish: String,
-    @NonNull @ColumnInfo(name = "desDish") var desDish: String,
+    @PrimaryKey(autoGenerate = true) val idDish: Int = 0,
+    @ColumnInfo(name = "nameDish") var nameDish: String,
+    @ColumnInfo(name = "priceDish") var priceDish: Double,
+    @ColumnInfo(name = "idTypeDish") var idTypeDish: Int,
+    @ColumnInfo(name = "imgDish") var imgDish: String,
+    @ColumnInfo(name = "desDish") var desDish: String,
+    @ColumnInfo(name = "sales") var sales: Int,
+
 )

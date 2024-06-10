@@ -15,7 +15,15 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.app_com_tam.bottonNavigation.AppNavHost
 import com.example.app_com_tam.database.DBApp
 import com.example.app_com_tam.repository.Repository
+import com.example.app_com_tam.room.DAO.CardDAO
+import com.example.app_com_tam.screens.TestScreen
+//import com.example.app_com_tam.database.DBApp
+
 import com.example.app_com_tam.ui.theme.App_Com_TamTheme
+import com.example.app_com_tam.viewModel.CartViewModel
+import com.example.app_com_tam.viewModel.DishViewModel
+import com.example.app_com_tam.viewModel.OrderViewModel
+import com.example.app_com_tam.viewModel.TypeDishViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -23,14 +31,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        database = Room.databaseBuilder(
-            applicationContext,
-            DBApp::class.java,
-            "comtam.db"
-        ).addMigrations(MIGRATION_10_16).build()
-
-        val repository = Repository(database)
+        DATABASE_INSTANCE=database
+        val repo=Repository(database)
+        val typeDishViewModel=TypeDishViewModel(repo)
+        val dishViewModel=DishViewModel(repo)
+        val orderViewModel=OrderViewModel(repo)
+        val cartViewModel=CartViewModel(repo)
 
         setContent {
             App_Com_TamTheme {
@@ -38,7 +44,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppCom(repository)
+                    AppCom(database)
+//                    TestScreen(
+//                        typeDishViewModel = typeDishViewModel,
+//                        dishViewModel = dishViewModel,
+//                        orderViewModel = orderViewModel,
+//                        cartViewModel =cartViewModel
+//                    )
+
                 }
             }
         }
@@ -46,27 +59,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppCom(repository: Repository) {
-    val navController = rememberNavController()
-    AppNavHost(navHostController = navController, repository)
-}
-
-val MIGRATION_10_16 = object : Migration(10, 16) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("ALTER TABLE dishs RENAME TO temp_dishs")
-        database.execSQL("CREATE TABLE IF NOT EXISTS dishs (idDish INTEGER PRIMARY KEY NOT NULL, nameDish TEXT NOT NULL, priceDish REAL NOT NULL, idTypeDish INTEGER NOT NULL, imgDish TEXT NOT NULL, desDish TEXT NOT NULL)")
-        database.execSQL("INSERT INTO dishs (idDish, nameDish, priceDish, idTypeDish, imgDish, desDish) SELECT idDish, nameDish, priceDish, idTypeDish, imgDish, desDish FROM temp_dishs")
-        database.execSQL("DROP TABLE IF EXISTS temp_dishs")
-
-        database.execSQL("ALTER TABLE TypeDish RENAME TO temp_TypeDish")
-
-        // Tạo lại bảng TypeDish với cấu trúc mới
-        database.execSQL("CREATE TABLE IF NOT EXISTS TypeDish (idTypeDish INTEGER PRIMARY KEY NOT NULL, nameType TEXT NOT NULL)")
-
-        // Sao chép dữ liệu từ bảng backup vào bảng mới
-        database.execSQL("INSERT INTO TypeDish (idTypeDish, nameType) SELECT idTypeDish, nameType FROM temp_TypeDish")
-
-        // Xóa bảng backup
-        database.execSQL("DROP TABLE IF EXISTS temp_TypeDish")
-    }
+fun AppCom(dbApp: DBApp) {
+    val navController= rememberNavController()
+    val repository:Repository= Repository(dbApp =dbApp )
+    AppNavHost(navHostController = navController,repository)
 }
