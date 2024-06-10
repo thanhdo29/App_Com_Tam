@@ -36,24 +36,29 @@ import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.Login
 import com.example.app_com_tam.screens.OrderDetails
 import com.example.app_com_tam.screens.TestScreen
+
 import com.example.app_com_tam.screens.Welcom
+import com.example.app_com_tam.screens.dish.AddDish
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.Dark_Charcoa
 import com.example.app_com_tam.ui.theme.White
 import com.example.app_com_tam.viewModel.CartViewModel
 import com.example.app_com_tam.viewModel.DishViewModel
 import com.example.app_com_tam.viewModel.OrderViewModel
+
 import com.example.app_com_tam.viewModel.TypeDishViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 enum class ROUTE_NAME{
     login,welcom,app,orderdetails
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavHost(navHostController: NavHostController,repository: Repository) {
+
     val systemUiController = rememberSystemUiController()
     val statusBarColor = Dark_Charcoa
     val orderViewModel=OrderViewModel(repository)
@@ -69,7 +74,7 @@ fun AppNavHost(navHostController: NavHostController,repository: Repository) {
     Surface {
         Scaffold(
             topBar = {
-                if (currentRoute!= ROUTE_NAME.welcom.name && currentRoute!= ROUTE_NAME.login.name){
+                if (currentRoute!= ROUTE_NAME.welcom.name && currentRoute!= ROUTE_NAME.login.name && currentRoute!= ROUTE_NAME.AddDish.name){
                     TopAppBar(title = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Image(painter = painterResource(id = R.drawable.logo), contentDescription ="", modifier = Modifier.size(57 .dp, 48.dp) )
@@ -94,6 +99,7 @@ fun AppNavHost(navHostController: NavHostController,repository: Repository) {
         ) {
             paddingValues ->
             NavigationGraph(navHostController = navHostController, paddingValues = paddingValues,repository)
+
         }
     }
 
@@ -103,15 +109,17 @@ fun AppNavHost(navHostController: NavHostController,repository: Repository) {
 @Composable
 fun NavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues, repository: Repository) {
     NavHost(navController = navHostController, startDestination = ROUTE_NAME.app.name ){
+
         composable(ROUTE_NAME.welcom.name){
             Welcom(navHostController)
         }
         composable(ROUTE_NAME.login.name){
-            Login(navHostController)
+            Login(navHostController, repository)
         }
         composable(ROUTE_NAME.app.name){
             ScreenBottonNavigation(repository)
         }
+
 
 
     }

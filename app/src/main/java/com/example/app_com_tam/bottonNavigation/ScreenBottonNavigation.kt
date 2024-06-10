@@ -2,6 +2,7 @@ package com.example.app_com_tam.bottonNavigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,9 +34,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.app_com_tam.screens.Help
 import com.example.app_com_tam.screens.Home
-import com.example.app_com_tam.screens.Manage
+import com.example.app_com_tam.screens.manager.Manage
 import com.example.app_com_tam.screens.Statistical
-import com.example.app_com_tam.ui.theme.Amber
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.White
 import androidx.compose.runtime.*
@@ -54,6 +54,7 @@ import com.example.app_com_tam.repository.Repository
 import com.example.app_com_tam.screens.OrderDetails
 import com.example.app_com_tam.viewModel.DishViewModel
 import com.example.app_com_tam.viewModel.OrderViewModel
+
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 enum class TitleBottonNavigation{
@@ -104,6 +105,7 @@ fun ScreenBottonNavigation(repository: Repository) {
         ) {
             paddingValue->
             BottonNavigationGraph(navHostController = navController, paddingValues = paddingValue, orderViewModel =orderViewModel , dishViewModel = DishViewModel(repository))
+
         }
     }
 }
@@ -148,6 +150,7 @@ fun BottonNavigationBar(items:List<BottonNavigationItem>,
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues,orderViewModel: OrderViewModel,dishViewModel: DishViewModel){
+
     NavHost(navController =navHostController , startDestination = TitleBottonNavigation.Home.name, modifier = Modifier.padding(paddingValues) ){
         composable(TitleBottonNavigation.Home.name){
             Home(orderViewModel,navHostController)
@@ -156,7 +159,7 @@ fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: P
             Statistical()
         }
         composable(TitleBottonNavigation.Manage.name){
-            Manage()
+            Manage(navHostController)
         }
         composable(TitleBottonNavigation.Help.name){
             Help()
@@ -170,6 +173,7 @@ fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: P
             val orderId = arguments?.getInt("idOrder") ?: -1
             OrderDetails(navHostController, orderId,orderViewModel,dishViewModel)
         }
+
 
 
     }

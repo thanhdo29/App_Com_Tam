@@ -1,5 +1,6 @@
 package com.example.app_com_tam.model
 
+import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -13,4 +14,5 @@ data class Dish(
     @ColumnInfo(name = "imgDish") var imgDish: String,
     @ColumnInfo(name = "desDish") var desDish: String,
     @ColumnInfo(name = "sales") var sales: Int,
+
 )

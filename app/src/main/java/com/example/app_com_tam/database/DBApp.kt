@@ -16,6 +16,7 @@ import com.example.app_com_tam.room.DAO.TypeDishDAO
 import com.example.app_com_tam.room.DAO.UserDAO
 
 @Database(entities = [User::class, Dish::class, TypeDish::class, Order::class, Cart::class,CartDishCrossRef::class], version = 11)
+
 abstract class DBApp : RoomDatabase() {
     abstract fun dishDAO(): DishDAO
     abstract fun typeDishDAO(): TypeDishDAO

@@ -2,8 +2,10 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
 
+
     id("kotlin-android")
     id("kotlin-kapt")
+
 }
 
 android {
@@ -53,7 +55,21 @@ android {
     }
 }
 
+
 dependencies {
+
+
+
+
+
+
+
+    //icon
+    implementation("androidx.compose.material:material-icons-core:1.0.1")
+    implementation("androidx.compose.material:material-icons-extended:1.0.1")
+    //asyc image
+
+    implementation("io.coil-kt:coil-gif:2.6.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -82,6 +98,7 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
     implementation ("io.coil-kt:coil-compose:1.4.0")
+
 
 
 }
