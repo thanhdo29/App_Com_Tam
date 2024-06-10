@@ -79,4 +79,9 @@ dependencies {
     implementation ("androidx.room:room-ktx:2.6.1")
 
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.26.3-beta")
+
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+    implementation ("io.coil-kt:coil-compose:1.4.0")
+
+
 }

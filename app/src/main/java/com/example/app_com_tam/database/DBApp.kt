@@ -2,23 +2,28 @@ package com.example.app_com_tam.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.app_com_tam.model.Cart
+import com.example.app_com_tam.model.CartDishCrossRef
 
 import com.example.app_com_tam.model.Dish;
 import com.example.app_com_tam.model.Order
 import com.example.app_com_tam.model.TypeDish
 import com.example.app_com_tam.model.User
+import com.example.app_com_tam.room.DAO.CardDAO
 import com.example.app_com_tam.room.DAO.DishDAO
 import com.example.app_com_tam.room.DAO.OrderDAO
 import com.example.app_com_tam.room.DAO.TypeDishDAO
 import com.example.app_com_tam.room.DAO.UserDAO
 
-@Database(entities = [User::class, Dish::class, TypeDish::class, Order::class], version = 10)
+@Database(entities = [User::class, Dish::class, TypeDish::class, Order::class, Cart::class,CartDishCrossRef::class], version = 11)
 abstract class DBApp : RoomDatabase() {
     abstract fun dishDAO(): DishDAO
     abstract fun typeDishDAO(): TypeDishDAO
     abstract fun orderDAO(): OrderDAO
 
     abstract fun userDao():UserDAO
+
+    abstract fun cardDao():CardDAO
 
 //    companion object {
 //        @Volatile

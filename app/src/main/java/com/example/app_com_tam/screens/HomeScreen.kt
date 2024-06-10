@@ -1,5 +1,8 @@
 package com.example.app_com_tam.screens
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,23 +20,48 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.app_com_tam.R
+import com.example.app_com_tam.bottonNavigation.ROUTE_NAME
+import com.example.app_com_tam.bottonNavigation.TitleBottonNavigation
 import com.example.app_com_tam.model.Order
 import com.example.app_com_tam.ui.theme.Amber
+import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.Dark_Charcoa
+import com.example.app_com_tam.viewModel.OrderViewModel
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.observeOn
 import java.util.Date
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Home() {
+fun Home(orderViewModel: OrderViewModel,navHostController: NavHostController) {
+
+
+    val orders by orderViewModel.orders.collectAsState(initial = emptyList())
+
+    val currentDate = getCurrentDate()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,14 +75,15 @@ fun Home() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Today: 19-05-2023",
+                text = "Today: $currentDate",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
-            )
+                fontSize = 20.sp,
+
+                )
             Spacer(modifier = Modifier.height(8.dp)) // Adding space between texts
             Text(
-                text = "Số lượng đơn: 2",
+                text = "Số lượng đơn: ${orders.size}",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
@@ -74,32 +103,48 @@ fun Home() {
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
+//                Button(onClick = { /*TODO*/
+//                    Log.e("DATA", orders.toString())
+//                }) {
+//                    Text(text = "hsdg")
+//                }
             }
+            OrderList(orders = orders,navHostController)
+
         }
 
     }
+
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun getCurrentDate(): String {
+    val currentDate = LocalDate.now()
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    return currentDate.format(formatter)
+}
+
 @Composable
-fun OrderList(orders: List<Order>) {
+fun OrderList(orders: List<Order>,navHostController: NavHostController) {
     LazyColumn {
         items(orders) { order ->
-            OrderItem(order = order)
+            OrderItem(order = order,navHostController)
         }
     }
 }
 
 @Composable
-fun OrderItem(order: Order) {
+fun OrderItem(order: Order,navHostController: NavHostController) {
     Card(
         modifier = Modifier
             .width(350.dp)
             .padding(8.dp)
             .height(100.dp)
-            .background(Color(0xFF363131))
             .clickable {
+                navHostController.navigate("orderDetails/${order.idOrder}")
             },
+        colors = CardDefaults.cardColors(containerColor = Black_Medium),
         shape = RoundedCornerShape(16.dp), // Thiết lập góc bo tròn
         border = BorderStroke(2.dp, Color.Black) // Thiết lập đường viền
     ) {
@@ -141,7 +186,7 @@ fun OrderItem(order: Order) {
                     Text(
                         color = Color.White,
                         fontSize = 18.sp,
-                        text = "${order.totalAmount}",
+                        text = "${order.totalAmount} đ",
                     )
                     Text(
                         color = Color.Red,
@@ -154,11 +199,11 @@ fun OrderItem(order: Order) {
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun HomePreview() {
-//    Home()
-//}
+@Preview(showBackground = true)
+@Composable
+fun HomePreview() {
+
+}
 //
 //
 //val category1 = Category(
