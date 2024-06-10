@@ -1,5 +1,6 @@
 package com.example.app_com_tam.bottonNavigation
 
+import CategoryScreen2
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -38,7 +39,12 @@ import com.example.app_com_tam.screens.OrderDetails
 import com.example.app_com_tam.screens.TestScreen
 
 import com.example.app_com_tam.screens.Welcom
+import com.example.app_com_tam.screens.category.AddCategory
+import com.example.app_com_tam.screens.category.CategoryScreen
 import com.example.app_com_tam.screens.dish.AddDish
+import com.example.app_com_tam.screens.dish.DishScreen
+import com.example.app_com_tam.screens.dish.ManagerDish
+import com.example.app_com_tam.screens.dish.UpdateDish
 import com.example.app_com_tam.ui.theme.Black_Medium
 import com.example.app_com_tam.ui.theme.Dark_Charcoa
 import com.example.app_com_tam.ui.theme.White
@@ -50,7 +56,7 @@ import com.example.app_com_tam.viewModel.TypeDishViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 enum class ROUTE_NAME{
-    login,welcom,app,orderdetails
+    login,welcom,app,orderdetails,AddDish,signup
 
 }
 
@@ -61,6 +67,7 @@ fun AppNavHost(navHostController: NavHostController,repository: Repository) {
 
     val systemUiController = rememberSystemUiController()
     val statusBarColor = Dark_Charcoa
+    val currentRoute = navHostController.currentBackStackEntryAsState().value?.destination?.route
     val orderViewModel=OrderViewModel(repository)
 
     SideEffect {
@@ -69,7 +76,6 @@ fun AppNavHost(navHostController: NavHostController,repository: Repository) {
             darkIcons = false // Thay đổi thành true nếu bạn muốn biểu tượng tối trên thanh trạng thái
         )
     }
-    val currentRoute = navHostController.currentBackStackEntryAsState().value?.destination?.route
 
     Surface {
         Scaffold(
@@ -83,7 +89,9 @@ fun AppNavHost(navHostController: NavHostController,repository: Repository) {
                         }
                     },
                         navigationIcon = {
-                            IconButton(onClick = { /*TODO*/ }) {
+                            IconButton(onClick = {
+                                navHostController.popBackStack()
+                            }) {
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowLeft,
                                     contentDescription = "",
@@ -97,8 +105,9 @@ fun AppNavHost(navHostController: NavHostController,repository: Repository) {
 
             }
         ) {
-            paddingValues ->
-            NavigationGraph(navHostController = navHostController, paddingValues = paddingValues,repository)
+                paddingValues ->
+            NavigationGraph(navHostController = navHostController, paddingValues = paddingValues, repository = repository)
+
 
         }
     }
@@ -108,7 +117,7 @@ fun AppNavHost(navHostController: NavHostController,repository: Repository) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues, repository: Repository) {
-    NavHost(navController = navHostController, startDestination = ROUTE_NAME.app.name ){
+    NavHost(navController = navHostController, startDestination = ROUTE_NAME.welcom.name ){
 
         composable(ROUTE_NAME.welcom.name){
             Welcom(navHostController)
@@ -119,8 +128,6 @@ fun NavigationGraph(navHostController: NavHostController, paddingValues: Padding
         composable(ROUTE_NAME.app.name){
             ScreenBottonNavigation(repository)
         }
-
-
 
     }
 }

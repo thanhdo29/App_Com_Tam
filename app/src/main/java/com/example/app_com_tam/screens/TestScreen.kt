@@ -28,11 +28,9 @@ fun TestScreen(
         Button(onClick = {
             val typeDish1 = TypeDish(
                 nameType = "Type 1",
-                imgType = "https://www.pinterest.com/pin/195414071324633385/"
             )
             val typeDish2 = TypeDish(
                 nameType = "Type 2",
-                imgType = "https://www.pinterest.com/pin/195414071324633385/"
             )
             typeDishViewModel.addTypeDish(typeDish1)
             typeDishViewModel.addTypeDish(typeDish2)
@@ -73,9 +71,9 @@ fun TestScreen(
             val cart1 = Cart(idCustomer = 1, idDish = 1, quantity = 2)
             val cart2 = Cart(idCustomer = 1, idDish = 2, quantity = 3)
 
-            val cartDish1 = CartDishCrossRef(cartId = cart1.idCart, dishId = cart1.idDish)
-            val cartDish2 = CartDishCrossRef(cartId = cart2.idCart, dishId = cart2.idDish)
-            val cartDish3 = CartDishCrossRef(cartId = cart2.idCart, dishId = dish3.idDish)
+            val cartDish1 = CartDishCrossRef(1,cartId = cart1.idCart, dishId = cart1.idDish)
+            val cartDish2 = CartDishCrossRef(2,cartId = cart2.idCart, dishId = cart2.idDish)
+            val cartDish3 = CartDishCrossRef(3,cartId = cart2.idCart, dishId = dish3.idDish)
 
             cartViewModel.addCart(cart1)
             cartViewModel.addCart(cart2)

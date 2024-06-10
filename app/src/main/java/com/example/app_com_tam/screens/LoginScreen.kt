@@ -210,7 +210,9 @@ fun Login(navHostController: NavHostController, repository: Repository) {
                 LaunchedEffect(key1 = it) {
                     if (it){
                         Toast.makeText(context, "Đăng nhập thành công",Toast.LENGTH_SHORT ).show()
-                        navHostController.navigate(ROUTE_NAME.app.name)
+                        navHostController.navigate(ROUTE_NAME.app.name){
+
+                        }
                     }else{
                         Toast.makeText(context, "Đăng nhập thất bại",Toast.LENGTH_SHORT ).show()
                     }

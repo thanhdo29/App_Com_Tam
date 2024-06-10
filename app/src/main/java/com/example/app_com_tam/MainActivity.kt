@@ -31,7 +31,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DATABASE_INSTANCE=database
+
+        database = Room.databaseBuilder(
+            applicationContext,
+            DBApp::class.java,
+            "comtam.db"
+        ).addMigrations(MIGRATION_1_2).build()
+
+        val repository = Repository(database)
         val repo=Repository(database)
         val typeDishViewModel=TypeDishViewModel(repo)
         val dishViewModel=DishViewModel(repo)
@@ -44,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppCom(database)
+                    AppCom(repository)
 //                    TestScreen(
 //                        typeDishViewModel = typeDishViewModel,
 //                        dishViewModel = dishViewModel,
@@ -59,8 +66,64 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppCom(dbApp: DBApp) {
-    val navController= rememberNavController()
-    val repository:Repository= Repository(dbApp =dbApp )
-    AppNavHost(navHostController = navController,repository)
+fun AppCom(repository: Repository) {
+    val navController = rememberNavController()
+    AppNavHost(navHostController = navController, repository)
+}
+
+val MIGRATION_1_2 = object : Migration(16, 19) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE dishs RENAME TO temp_dishs")
+
+        database.execSQL("ALTER TABLE temp_dishs ADD COLUMN sales INTEGER NOT NULL DEFAULT 0")
+
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS dishs (
+                idDish INTEGER PRIMARY KEY NOT NULL,
+                nameDish TEXT NOT NULL,
+                priceDish REAL NOT NULL,
+                idTypeDish INTEGER NOT NULL,
+                imgDish TEXT NOT NULL,
+                desDish TEXT NOT NULL,
+                sales INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+
+        database.execSQL("""
+            INSERT INTO dishs (idDish, nameDish, priceDish, idTypeDish, imgDish, desDish, sales)
+            SELECT idDish, nameDish, priceDish, idTypeDish, imgDish, desDish, sales FROM temp_dishs
+        """)
+
+        database.execSQL("DROP TABLE IF EXISTS temp_dishs")
+
+        database.execSQL("ALTER TABLE TypeDish RENAME TO temp_TypeDish")
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS TypeDish (
+                idTypeDish INTEGER PRIMARY KEY NOT NULL,
+                nameType TEXT NOT NULL
+            )
+        """)
+        database.execSQL("""
+            INSERT INTO TypeDish (idTypeDish, nameType)
+            SELECT idTypeDish, nameType FROM temp_TypeDish
+        """)
+        database.execSQL("DROP TABLE IF EXISTS temp_TypeDish")
+
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS Cart (
+                idCart INTEGER PRIMARY KEY NOT NULL,
+                idDish INTEGER NOT NULL,
+                quantity INTEGER NOT NULL,
+                idCustomer INTEGER NOT NULL
+            )
+        """)
+
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS CartDishCrossRef (
+                id INTEGER PRIMARY KEY NOT NULL,
+                cartId INTEGER NOT NULL,
+                dishId INTEGER NOT NULL
+            )
+        """)
+    }
 }

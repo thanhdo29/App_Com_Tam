@@ -1,18 +1,21 @@
 package com.example.app_com_tam.model
-
+import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "dishs")
 data class Dish(
-    @PrimaryKey(autoGenerate = true) val idDish: Int = 0,
-    @ColumnInfo(name = "nameDish") var nameDish: String,
-    @ColumnInfo(name = "priceDish") var priceDish: Double,
-    @ColumnInfo(name = "idTypeDish") var idTypeDish: Int,
-    @ColumnInfo(name = "imgDish") var imgDish: String,
-    @ColumnInfo(name = "desDish") var desDish: String,
-    @ColumnInfo(name = "sales") var sales: Int,
+    @NonNull @PrimaryKey(autoGenerate = true) val idDish: Int = 0,
+    @NonNull @ColumnInfo(name = "nameDish") var nameDish: String,
+    @NonNull @ColumnInfo(name = "priceDish") var priceDish: Double,
+    @NonNull @ColumnInfo(name = "idTypeDish") var idTypeDish: Int,
+    @NonNull @ColumnInfo(name = "imgDish") var imgDish: String,
+    @NonNull @ColumnInfo(name = "desDish") var desDish: String,
+    @NonNull @ColumnInfo(name = "sales") var sales: Int,
 
-)
+    ):Parcelable
+

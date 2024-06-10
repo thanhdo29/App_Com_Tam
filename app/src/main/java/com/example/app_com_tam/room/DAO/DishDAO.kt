@@ -14,11 +14,17 @@ import kotlinx.coroutines.flow.Flow
         suspend fun addDish(dish: Dish)
 
 
+    @Query("Select * FROM dishs")
+     fun getAllDish(): Flow<List<Dish>>
+
+    @Query("Select * FROM dishs Where idDish= :idDishUpdate LIMIT 1")
+    fun getDishById1(idDishUpdate:Int):Flow<Dish?>
+
+
         @Query("SELECT * FROM dishs WHERE idDish = :dishId")
         suspend fun getDishById(dishId: Int): Dish?
 
-        @Query("Select * FROM dishs")
-        fun getAllDish(): Flow<List<Dish>>
+
 
         @Delete
         suspend fun deleteDish(dish: Dish)

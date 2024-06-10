@@ -24,7 +24,7 @@ class OrderViewModel (val repository: Repository):ViewModel(){
 
     init {
         viewModelScope.launch {
-            repository.getAllOrders().collect { orderList ->
+            repository.getAllOrder().collect { orderList ->
                 _orders.value = orderList
             }
         }
