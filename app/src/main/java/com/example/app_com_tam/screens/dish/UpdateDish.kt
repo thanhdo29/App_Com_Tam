@@ -44,7 +44,7 @@ import com.example.app_com_tam.viewModel.DishViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ManagerDish(navController: NavController, dishViewModel: DishViewModel) {
-    val dishs by dishViewModel.dishs.collectAsState(initial = emptyList())
+    val dishs by dishViewModel.dishes.collectAsState(initial = emptyList())
     var showDialogDelete by remember { mutableStateOf(false) }
     var selectedDishDelete by remember { mutableStateOf<Dish?>(null) }
     var selectedDishUpdate by remember { mutableStateOf<Dish?>(null) }

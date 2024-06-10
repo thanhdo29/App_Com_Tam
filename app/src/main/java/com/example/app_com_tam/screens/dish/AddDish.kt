@@ -168,7 +168,8 @@ fun AddDish(navController: NavController, typeDishViewModel: TypeDishViewModel, 
                         priceDish = price.text.toDouble(),
                         idTypeDish = it.idTypeDish,
                         imgDish = imgDish.toString(),
-                        desDish = "ok"
+                        desDish = "ok",
+                        sales = 20
                     )
                     dishViewModel.addDish(dish)
                     navController.popBackStack()

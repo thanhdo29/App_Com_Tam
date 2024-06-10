@@ -1,8 +1,9 @@
 package com.example.app_com_tam.bottonNavigation
 
-import com.example.app_com_tam.ui.theme.Amber
-
 import CategoryScreen2
+import android.os.Build
+import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -59,15 +60,20 @@ import com.example.app_com_tam.screens.dish.DishScreen
 import com.example.app_com_tam.screens.dish.ManagerDish
 import com.example.app_com_tam.screens.dish.UpdateDish
 import com.example.app_com_tam.ui.theme.Dark_Charcoa
+import com.example.app_com_tam.screens.OrderDetails
+import com.example.app_com_tam.ui.theme.Amber
 import com.example.app_com_tam.viewModel.DishViewModel
+import com.example.app_com_tam.viewModel.OrderViewModel
 import com.example.app_com_tam.viewModel.TypeDishViewModel
+
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 enum class TitleBottonNavigation{
     Home,
     Statistical,
     Manage,
-    Help
+    Help,
+    OrderDetails
 }
 
 data class BottonNavigationItem(
@@ -76,14 +82,16 @@ data class BottonNavigationItem(
     val unSnSelectItem:Int
 )
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenBottonNavigation(repository: Repository) {
-
     val navController= rememberNavController()
     var selectItem by remember {
         mutableStateOf(0)
     }
+
+    val orderViewModel=OrderViewModel(repository)
 
 
     val listItem = listOf(
@@ -107,7 +115,8 @@ fun ScreenBottonNavigation(repository: Repository) {
             }
         ) {
             paddingValue->
-            BottonNavigationGraph(navHostController = navController, paddingValues = paddingValue,repository)
+            BottonNavigationGraph(navHostController = navController, paddingValues = paddingValue, orderViewModel =orderViewModel , dishViewModel = DishViewModel(repository),repository)
+
         }
     }
 }
@@ -149,15 +158,13 @@ fun BottonNavigationBar(items:List<BottonNavigationItem>,
     }
 }
 
-
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues, repository: Repository) {
-
+fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: PaddingValues,orderViewModel: OrderViewModel,dishViewModel: DishViewModel,repository: Repository){
 
     NavHost(navController =navHostController , startDestination = TitleBottonNavigation.Home.name, modifier = Modifier.padding(paddingValues) ){
         composable(TitleBottonNavigation.Home.name){
-            Home()
+            Home(orderViewModel,navHostController)
         }
         composable(TitleBottonNavigation.Statistical.name){
             Statistical()
@@ -168,6 +175,33 @@ fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: P
         composable(TitleBottonNavigation.Help.name){
             Help()
         }
+        composable(
+            "orderDetails/{idOrder}",
+            arguments = listOf(navArgument("idOrder") { type = NavType.IntType })
+        ) {
+            val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+            val arguments = navBackStackEntry?.arguments
+            val orderId = arguments?.getInt("idOrder") ?: -1
+            OrderDetails(navHostController, orderId,orderViewModel,dishViewModel)
+        }
+
+
+        composable("ManagerDish"){
+            ManagerDish(navHostController, dishViewModel = DishViewModel(repository))
+        }
+        composable("UpdateDish/{dish}") { backStackEntry ->
+            val dish = backStackEntry.arguments?.getParcelable<Dish>("dish")
+            dish?.let { dish ->
+                UpdateDish(navHostController, dish, dishViewModel = DishViewModel(repository))
+            } ?: run {
+                Text("Dish not found")
+            }
+        }
+
+        composable(ROUTE_NAME.AddDish.name){
+            AddDish(navHostController, typeDishViewModel = TypeDishViewModel(repository), dishViewModel = DishViewModel(repository))
+        }
+
         composable("ManageCategory"){
             CategoryScreen(navHostController)
         }
@@ -197,5 +231,6 @@ fun BottonNavigationGraph(navHostController: NavHostController, paddingValues: P
         composable(ROUTE_NAME.AddDish.name){
             AddDish(navHostController, typeDishViewModel = TypeDishViewModel(repository), dishViewModel = DishViewModel(repository))
         }
+
     }
 }
